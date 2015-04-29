@@ -8,15 +8,15 @@
 
 `Directory Structure`
 
-..views
+views
 
 ....body
 
-......body.html
+........body.html
 
 ....footer
 
-......footer.html
+........footer.html
 
 ....index.html
 
