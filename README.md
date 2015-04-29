@@ -9,16 +9,21 @@
 `Directory Structure`
 
 ..views
+
 ....body
+
 ......body.html
+
 ....footer
+
 ......footer.html
+
 ....index.html
 
 
 `index.html`
 
-```
+```html
 <!DOCTYPE html>
 <html>
 <head>
