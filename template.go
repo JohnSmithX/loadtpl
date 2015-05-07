@@ -1,6 +1,7 @@
 package loadtpl
 
 import (
+	"bytes"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -15,7 +16,32 @@ var (
 	DefaultTplExt = []string{"html", "tpl"}
 	root          string
 	t             *template.Template
+	funcMap       template.FuncMap
 )
+
+func init() {
+	funcMap = template.FuncMap{}
+	funcMap["dateformat"] = DateFormat
+	funcMap["date"] = Date
+	funcMap["compare"] = Compare
+	funcMap["substr"] = Substr
+	funcMap["html2str"] = Html2str
+	funcMap["str2html"] = Str2html
+	funcMap["htmlquote"] = Htmlquote
+	funcMap["htmlunquote"] = Htmlunquote
+	funcMap["renderform"] = RenderForm
+	funcMap["assets_js"] = AssetsJs
+	funcMap["assets_css"] = AssetsCss
+
+	// go1.2 added template funcs
+	// Comparisons
+	funcMap["eq"] = eq // ==
+	funcMap["ge"] = ge // >=
+	funcMap["gt"] = gt // >
+	funcMap["le"] = le // <=
+	funcMap["lt"] = lt // <
+	funcMap["ne"] = ne // !=
+}
 
 func hasTemplateExt(paths string) bool {
 	for _, v := range DefaultTplExt {
@@ -80,7 +106,14 @@ func pathHandler(paths string, f os.FileInfo, err error) error {
 	}
 	if name == t.Name() {
 	} else {
-		t = t.New(name)
+		t = t.New(name).Funcs(funcMap).Funcs(map[string]interface{}{
+			"CallTemplate": func(name string, data interface{}) (ret template.HTML, err error) {
+				buf := bytes.NewBuffer([]byte{})
+				err = t.ExecuteTemplate(buf, name, data)
+				ret = template.HTML(buf.String())
+				return
+			},
+		})
 	}
 	_, err = t.Parse(s)
 	if err != nil {

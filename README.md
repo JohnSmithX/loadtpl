@@ -8,6 +8,7 @@
 
 `Directory Structure`
 
+```
 views
 
 ....body
@@ -19,7 +20,7 @@ views
 ........footer.html
 
 ....index.html
-
+```
 
 `index.html`
 
